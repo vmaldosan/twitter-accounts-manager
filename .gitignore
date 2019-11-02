@@ -30,3 +30,7 @@ yarn-error.log*
 /server/node_modules
 /client/build/
 node_modules
+
+# Eclipse
+.project
+.settings
