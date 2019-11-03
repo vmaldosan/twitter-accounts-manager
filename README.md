@@ -34,4 +34,3 @@ Go to localhost:3000
 ### Instructions
 
 - Rename `/server/config/keys.copy.js` to `/server/config/keys.js` and add your keys
-
