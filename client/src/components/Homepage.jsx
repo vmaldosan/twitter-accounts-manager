@@ -15,6 +15,7 @@ export default class HomePage extends Component {
 
 	state = {
 		user: {},
+		lists: [],
 		error: null,
 		authenticated: false
 	};
@@ -37,7 +38,8 @@ export default class HomePage extends Component {
 			.then(responseJson => {
 				this.setState({
 					authenticated: true,
-					user: responseJson.user
+					user: responseJson.user,
+					lists: ["list1", "list2", "list3"]
 				});
 			})
 			.catch(error => {
@@ -63,6 +65,8 @@ export default class HomePage extends Component {
 						<div>
 							<h1>You have login succcessfully!</h1>
 							<h2>Welcome {this.state.user.name}!</h2>
+							<h2>Select the list(s) to export:</h2>
+							<ArrayToList lists={this.state.lists}/>
 						</div>
 					)}
 				</div>
@@ -73,4 +77,18 @@ export default class HomePage extends Component {
 	_handleNotAuthenticated = () => {
 		this.setState({ authenticated: false });
 	};
+
+	_handleListsClick = () => {
+		window.open("http://localhost:4000/lists", "_self");
+	};
+}
+
+function ArrayToList(props) {
+	const lists = props.lists;
+	const listItems = lists.map((list) =>
+		<li>{list}</li>
+	);
+	return (
+		<ul>{listItems}</ul>
+	);
 }

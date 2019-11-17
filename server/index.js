@@ -6,6 +6,7 @@ const passport = require("passport");
 const passportSetup = require("./config/passport-setup");
 const session = require("express-session");
 const authRoutes = require("./routes/auth-routes");
+const listsRoutes = require("./routes/lists-routes");
 const mongoose = require("mongoose");
 const keys = require("./config/keys");
 const cors = require("cors");
@@ -41,8 +42,11 @@ app.use(
 	})
 );
 
-// set up routes
+// set up auth routes
 app.use("/auth", authRoutes);
+
+// set up lists routes
+app.use("/lists", listsRoutes);
 
 const authCheck = (req, res, next) => {
 	if (!req.user) {

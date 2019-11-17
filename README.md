@@ -4,10 +4,6 @@
 
 This is a simple web authentication web application via Twitter OAuth. Please feel free to fork this and build your own application. If you have any questions, please feel free to send me an issue or a pull request.
 
-### Demo
-
-![Demo](client/src/images/demo.gif)
-
 ---
 
 ### Server

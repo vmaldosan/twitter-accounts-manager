@@ -23,8 +23,8 @@ passport.deserializeUser((id, done) => {
 passport.use(
 	new TwitterStrategy(
 		{
-			consumerKey: keys.TWITTER_CONSUMER_KEY,
-			consumerSecret: keys.TWITTER_CONSUMER_SECRET,
+			consumerKey: keys.TWITTER_CONSUMER_KEY_DEST,
+			consumerSecret: keys.TWITTER_CONSUMER_SECRET_DEST,
 			callbackURL: "/auth/twitter/redirect"
 		},
 		async (token, tokenSecret, profile, done) => {
