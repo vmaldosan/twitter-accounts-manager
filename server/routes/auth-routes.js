@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const passport = require("passport");
 const CLIENT_HOME_PAGE_URL = "http://localhost:3000";
+const FAILED_LOGIN = "/login/failed";
 
 // when login is successful, retrieve user info
 router.get("/login/success", (req, res) => {
@@ -15,7 +16,7 @@ router.get("/login/success", (req, res) => {
 });
 
 // when login failed, send failed msg
-router.get("/login/failed", (req, res) => {
+router.get(FAILED_LOGIN, (req, res) => {
 	res.status(401).json({
 		success: false,
 		message: "user failed to authenticate."
@@ -36,7 +37,7 @@ router.get(
 	"/twitter/redirect",
 	passport.authenticate("twitter", {
 		successRedirect: CLIENT_HOME_PAGE_URL,
-		failureRedirect: "/auth/login/failed"
+		failureRedirect: "/auth" + FAILED_LOGIN
 	})
 );
 

@@ -21,7 +21,7 @@ app.use(
 	cookieSession({
 		name: "session",
 		keys: [keys.COOKIE_KEY],
-		maxAge: 24 * 60 * 60 * 100
+		maxAge: 24 * 60 * 60 * 100 // session will expire after 24 hours
 	})
 );
 
@@ -30,6 +30,7 @@ app.use(cookieParser());
 
 // initalize passport
 app.use(passport.initialize());
+
 // deserialize cookie from the browser
 app.use(passport.session());
 
