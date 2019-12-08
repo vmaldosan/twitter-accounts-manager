@@ -17,13 +17,13 @@ router.get("/list", (req, res) => {
   twitter.getCustomApiCall('/lists/list.json', 'reverse=true', error, success);
 
   function success(data) {
-    console.log('Data [%s]', data);
+    // console.log('Data [%s]', data);
     res.send(data);
   }
 
   function error(err, res, body) {
     console.log('ERROR [%s]', err);
-    res.status(500).send(`error while retrieving lists: ${body}`);
+    // res.status(500).send(`error while retrieving lists: ${body}`);
   };
   
 });

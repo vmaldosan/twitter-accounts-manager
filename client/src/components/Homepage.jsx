@@ -1,6 +1,7 @@
 import Header from "./Header";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import ListTable from "./ListTable";
 
 export default class HomePage extends Component {
 	static propTypes = {
@@ -15,8 +16,6 @@ export default class HomePage extends Component {
 
 	state = {
 		user: {},
-		lists: [],
-		error: null,
 		authenticated: false
 	};
 
@@ -52,7 +51,7 @@ export default class HomePage extends Component {
 
 	render() {
 		const { authenticated } = this.state;
-		return (
+		return(
 			<div>
 				<Header
 					authenticated={authenticated}
@@ -63,11 +62,16 @@ export default class HomePage extends Component {
 						<h1>Welcome!</h1>
 					) : (
 						<div>
-							<h1>You have login succcessfully!</h1>
-							<h2>Welcome {this.state.user.name}!</h2>
-							<h2>Select the list(s) to export:</h2>
-							<button onClick={this._handleListsClick}>Show lists</button>
-							<ArrayToList lists={this.state.lists}/>
+							<div>
+								<h1>You have login succcessfully!</h1>
+								<h2>Welcome {this.state.user.name}!</h2>
+							</div>
+							<div className="column">
+								<ListTable orig="true"/>
+							</div>
+							<div className="column">
+								<ListTable />
+							</div>
 						</div>
 					)}
 				</div>
@@ -78,41 +82,4 @@ export default class HomePage extends Component {
 	_handleNotAuthenticated = () => {
 		this.setState({ authenticated: false });
 	};
-
-	_handleListsClick = () => {
-		fetch("http://localhost:4000/lists/list", {
-			method: "GET",
-			credentials: "include",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				"Access-Control-Allow-Credentials": true
-			}
-		})
-			.then(response => {
-				if (response.status === 200) return response.json();
-				throw new Error("Failed to retrieve lists");
-			})
-			.then(responseJson => {
-				this.setState({
-					lists: responseJson
-				});
-			})
-			.catch(error => {
-				this.setState({
-					lists: [],
-					error: "Failed to retrieve lists"
-				});
-			});
-	};
-}
-
-function ArrayToList(props) {
-	const lists = props.lists;
-	const listItems = lists.map((list) =>
-		<li>Name:{list.name} | Mode: {list.mode}</li>
-	);
-	return (
-		<ul>{listItems}</ul>
-	);
 }
