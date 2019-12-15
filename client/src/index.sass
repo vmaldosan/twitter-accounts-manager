@@ -17,6 +17,7 @@ body, html
 	border-collapse: collapse
 th
 	text-align: center
+
 button
 	align-items: center
 	justify-content: center
@@ -27,26 +28,32 @@ button
 	margin: 5px
 	border-radius: 10px
 	border-width: 0
-	background-color: #00C3FF
+	background-color: #00c3ff
 	outline: 0
 	&:hover
-		background-color: #00A7CE
-
+		background-color: #00a7ce
 .disabled
 	opacity: 0.6
 	cursor: not-allowed
 	&:hover
-		background-color: #00C3FF
+		background-color: #00c3ff
+.save
+	background-color: #00ff99
+	&:hover
+		background-color: #008852
+
+.cancel
+	background-color: #ee4545
+	&:hover
+		background-color: #802121
 
 .column
 	float: left
 	width: 33%
-
 .row:after
 	content: ""
 	display: table
 	clear: both
-
 /* Responsive layout - makes the three columns stack on top of each other instead of next to each other on smaller screens (600px wide or less) */
 @media screen and (max-width: 600px)
 	.column
@@ -59,7 +66,6 @@ code
 	display: flex
 	list-style-type: none
 	justify-content: flex-end
-
 .menu li
 	margin: 0 10px
 	cursor: pointer

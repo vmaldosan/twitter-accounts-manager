@@ -11,15 +11,9 @@ const mongoose = require("mongoose");
 const keys = require("./config/keys");
 const cors = require("cors");
 const cookieParser = require("cookie-parser"); // parse cookie header
+const bodyParser = require('body-parser');
 
 // connect to mongodb
-/* try {
-	await mongoose.connect(keys.MONGODB_URI, { useNewUrlParser: true });
-	console.log("Connected to " + keys.MONGODB_URI);
-} catch (error) {
-	console.log(error);
-	exit(1);
-} */
 mongoose.connect(keys.MONGODB_URI, { useNewUrlParser: true })
 .then(console.log("Connected to " + keys.MONGODB_URI))
 .catch(error => {
@@ -52,6 +46,9 @@ app.use(
 		credentials: true // allow session cookie from browser to pass through
 	})
 );
+
+// for parsing application/json
+app.use(bodyParser.json());
 
 // set up auth routes
 app.use("/auth", authRoutes);
