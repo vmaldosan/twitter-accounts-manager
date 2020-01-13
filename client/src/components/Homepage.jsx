@@ -16,8 +16,7 @@ export default class HomePage extends Component {
 
 	constructor(props) {
 		super(props);
-		this.handleListsClick = 
-			this.handleListsClick.bind(this);
+		this.handleListsClick = this.handleListsClick.bind(this);
 		this.state = {
 			user: {},
 			authenticated: false,
@@ -26,7 +25,8 @@ export default class HomePage extends Component {
 			selOrig: [],
 			selDest: [],
 			newLists: [],
-			shown: false
+			shown: false,
+			merged: false
 		};
 	}
 
@@ -60,80 +60,89 @@ export default class HomePage extends Component {
 		});
 	}
 
-	handleListsClick = (listIds, type) => {
-		if (type === 'orig') {
-			this.setState({
-				selOrig: listIds
-			});
+	handleListsClick = (listIds, type, all) => {
+		if (type === "orig") {
+			if (listIds.length > 0) {
+				this.setState({selOrig: listIds});
+			} else if (all) {
+				const allLists = this.state.origLists.map(list => String(list.key));
+				this.setState({selOrig: allLists});
+			} else {
+				this.setState({selOrig: []});
+			}
 		} else {
-			this.setState({
-				selDest: listIds
-			});
+			if (listIds.length > 0) {
+				this.setState({selDest: listIds});
+			} else if (all) {
+				const allLists = this.state.destLists.map(list => String(list.key));
+				this.setState({selDest: allLists});
+			} else {
+				this.setState({selDest: []});
+			}
 		}
 	}
 
 	render() {
-		const { authenticated } = this.state;
-		const toggle = this.state.shown ? 
-					'Hide' : 'Show';
-		const tables = this.state.shown ?
-				<div className='row'>
-					<div className='column'>
-						<ListTable type='orig'
-							lists={this.state.origLists}
-							selectedLists={this.state.selOrig}
-							parentCb={this.handleListsClick}/>
-					</div>
-					<div className='column'>
-						<ListTable type='dest'
-							lists={this.state.destLists.concat(this.state.newLists)}
-							selectedLists={this.state.selDest}
-							parentCb={this.handleListsClick}/>
-					</div>
+		const action = this.state.shown ? "Hide" : "Show";
+		const tables = this.state.shown ? (
+			<div className="row">
+				<div className="column">
+					<ListTable
+						type="orig"
+						lists={this.state.origLists}
+						selected={this.state.selOrig}
+						parentCb={this.handleListsClick}
+					/>
 				</div>
-				: '';
-		const copyBtnClass = this.state.selOrig.length === 0 ? 'disabled' : '';
-		const mergeBtnClass = this.state.selOrig.length > 0 
-				&& this.state.selDest.length > 0 ? '' : 'disabled';
-		const actionBtns = 
-				<div>
-					<button className={copyBtnClass} onClick={this._handleCopyLists}>Copy</button>
-					<button className={mergeBtnClass} onClick={this._handleMergeLists}>Merge</button>
-				</div>;
-		const confirmationBtns = 
-				<div>
-					<button className='save' onClick={this._handleSave}>Save</button>
-					<button className='cancel' onClick={this._handleCancel}>Cancel</button>
-				</div>;
-
-		return(
+				<div className="column">
+					<ListTable
+						type="dest"
+						lists={this.state.destLists}
+						pending={this.state.newLists}
+						selected={this.state.selDest}
+						parentCb={this.handleListsClick}
+					/>
+				</div>
+			</div>
+		) : ("");
+		const copyBtnClass = "" +
+				(this.state.selOrig.length === 0 ? " disabled" : "");
+		const mergeBtnClass = "" + (this.state.selOrig.length > 0
+				&& this.state.selDest.length > 0 ? "" : " disabled");
+		const actionBtns = (
 			<div>
-				<Header authenticated={authenticated} 
-						handleNotAuthenticated={this._handleNotAuthenticated} />
-				<div>
-					{!authenticated ? (
-						<h1>Login to start</h1>
-					) : (
-						<div>
-							<div>
-								<h1>You have login succcessfully to your first account!</h1>
-								<h2>Welcome {this.state.user.name}!</h2>
-							</div>
-							<div>
-								<button onClick={this._handleToggleLists}>
-									{toggle} lists
-								</button>
-								{tables}
-								<div className='footer'>
-									{actionBtns}
-								</div>
-								<div className='footer'>
-									{confirmationBtns}
-								</div>
-							</div>
-						</div>
-					)}
-				</div>
+				<button type="button" className={copyBtnClass} 
+					onClick={this._handleCopyLists}>
+					Copy
+				</button>
+				<button type="button" className={mergeBtnClass} 
+					onClick={this._handleMergeLists}>
+					Merge
+				</button>
+			</div>
+		);
+		const confirmBtnClass = (this.state.newLists.length > 0
+				|| this.state.merged) ? "" : " disabled";
+		const confirmationBtns = (
+			<div>
+				<button type="button" className={"" + confirmBtnClass} 
+					onClick={this._handleSave}>
+					Save
+				</button>
+				<button type="button" className={"" + confirmBtnClass}
+					onClick={this._handleCancel}>
+					Cancel
+				</button>
+			</div>
+		);
+
+		return (
+			<div>
+				<button type="button" 
+					onClick={this._handleToggleLists}>{action} lists</button>
+				{tables}
+				<div className="actions">{actionBtns}</div>
+				<div className="footer">{confirmationBtns}</div>
 			</div>
 		);
 	}
@@ -198,41 +207,74 @@ export default class HomePage extends Component {
 				shown: true
 			});
 		} else {
-			this.setState({
-				selOrig: [],
-				selDest: [],
-				newLists: [],
-				shown: false
-			});
+			this._handleCancel();
+			this.setState({shown: false});
 		}
 	}
 
 	_handleCopyLists = () => {
-		let selOrigList = this.state.origLists.filter((list) =>	
-			this.state.selOrig.indexOf(String(list.key)) >= 0
+		let selOrigLists = this.state.origLists.filter(
+			list => this.state.selOrig.indexOf(String(list.key)) >= 0
 		);
-		selOrigList = this.state.newLists.concat(selOrigList);
-		this.setState((state) => ({
-			newLists: selOrigList
-		}));
-	}
+		selOrigLists = JSON.parse(JSON.stringify(selOrigLists)).map(
+			list => {
+				list.name = list.name + "_copy";
+				return list;
+			});
+		selOrigLists = this.state.newLists.concat(selOrigLists);
+		this.setState({ newLists: selOrigLists });
+	};
 
 	_handleMergeLists = () => {
-
-	}
+		let totalNewMembers = 0;
+		this.state.origLists.forEach(
+			list => {
+				if (this.state.selOrig.indexOf(String(list.key)) >= 0) {
+					totalNewMembers += list.membersCount;
+				}
+		});
+		let isMerged = false;
+		const updatedDestLists = this.state.destLists.map(
+			list => {
+				if (this.state.selDest.indexOf(String(list.key)) >= 0) {
+					list.newMembers = totalNewMembers;
+					isMerged = true;
+				}
+				return list;
+			}
+		);
+		this.setState({
+			destLists: updatedDestLists,
+			merged: isMerged
+		});
+	};
 
 	_handleSave = () => {
-		fetch('http://localhost:4000/lists/list', {
-			method: 'PUT',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(this.state.newLists)
-		});
-	}
+		const updatedDestLists = this.state.destLists.map(
+			list => {
+				if (list.newMembers != undefined) {
+					list.membersCount += list.newMembers;
+				}
+				list.newMembers = undefined;
+				return list;
+			}
+		);
+		this.setState((state) => ({
+			destLists: updatedDestLists.concat(state.newLists)
+		}));
+		this._handleCancel();
+	};
 
 	_handleCancel = () => {
-
-	}
+		document.getElementById("listBoxorig").checked = false;
+		document.getElementById("listBoxdest").checked = false;
+		this.state.destLists.forEach(
+			list => list.newMembers = undefined
+		);
+		this.setState({
+			selOrig: [],
+			selDest: [],
+			newLists: []
+		});
+	};
 }
