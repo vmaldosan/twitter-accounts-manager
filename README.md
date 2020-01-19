@@ -1,31 +1,24 @@
-# Authenticate Twitter via passport
+# Basic operations with Twitter accounts
 
-### About
-
-This is a simple web authentication web application via Twitter OAuth. Please feel free to fork this and build your own application. If you have any questions, please feel free to send me an issue or a pull request.
-
----
+Forked from [https://github.com/leannezhang/twitter-authentication]
+React application that allows basic operations on two Twitter accounts.
 
 ### Server
 
-Run on express server
+Start express server
 
 ```
 cd server/
-nodemon index.js
+nodemon
 ```
-
-Go to localhost:4000
 
 ### Client
 
 ```
 cd client/
 yarn install
-yarn run start
+yarn start
 ```
-
-Go to localhost:3000
 
 ### Instructions
 

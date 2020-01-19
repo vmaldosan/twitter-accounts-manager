@@ -14,13 +14,12 @@ router.get('/list/:type', (req, res) => {
 	}
 
 	function success(data) {
-		// console.log('>>>>> Data >>>>>\n %s', data);
 		let filteredData = JSON.parse(data).map((list) => {
 			const fList = {
 				key: list.id_str,
 				name: list.name,
 				mode: list.mode,
-				memCount: list.member_count
+				membersCount: list.member_count
 			};
 			return fList;
 		});
@@ -33,14 +32,14 @@ router.get('/list/:type', (req, res) => {
 	};
 });
 
-router.put('/list', (req, res) => {
-	// console.log(req.body);
+router.post('/list', (req, res) => {
+	console.log(req.body);
 	if (req.body.length === 0) {
-		res.status(400).send('no lists to create');
+		res.status(422).send('no lists to create');
 	} else {
-		let responseData = req.body.map((list) => {
+		let responseData = req.body.lists.map((list) => {
 			twitterDest.postCustomApiCall(
-				encodeURI('/lists/create.json?name=' + list.name + '&mode=' + list.mode), 
+				encodeURI('/lists/create.json?name=' + list.name + '&mode=' + list.mode),
 				{}, error, success);
 
 			function success(data) {
@@ -49,7 +48,7 @@ router.put('/list', (req, res) => {
 						key: parsed.id_str,
 						name: parsed.name,
 						mode: parsed.mode,
-						memCount: parsed.member_count
+						membersCount: parsed.member_count
 				};
 				console.log(`list %s created`, filteredData.name);
 				return filteredData;
@@ -60,8 +59,36 @@ router.put('/list', (req, res) => {
 				// res.status(500).send(`error while retrieving origin lists: ${body}`);
 			};
 		});
-		console.log(responseData);
 		res.status(200).json(responseData);
+
+		/* const calls = [
+			twitterDest.postCustomApiCall(
+				encodeURI('/lists/create.json?name=' + list.name + '&mode=' + list.mode), 
+				{}, error, success);
+
+			function success(data) {
+				const parsed = JSON.parse(data);
+				let filteredData = {
+						key: parsed.id_str,
+						name: parsed.name,
+						mode: parsed.mode,
+						membersCount: parsed.member_count
+				};
+				console.log(`list %s created`, filteredData.name);
+				return filteredData;
+			}
+
+			function error(err) {
+				console.log('ERROR [%s]', err);
+				// res.status(500).send(`error while retrieving origin lists: ${body}`);
+			}
+		];
+		async.series(tasks, (err, results) => {
+			if (err) {
+				return next(err);
+			}
+			return res.json(results);
+		}); */
 	}
 });
 

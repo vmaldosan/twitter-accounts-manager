@@ -2,6 +2,7 @@ import Header from './Header';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ListTable from './ListTable';
+import axios from 'axios';
 
 export default class HomePage extends Component {
 	static propTypes = {
@@ -83,7 +84,8 @@ export default class HomePage extends Component {
 	}
 
 	render() {
-		const action = this.state.shown ? "Hide" : "Show";
+		const { authenticated } = this.state;
+		const toggle = this.state.shown ? 'Hide' : 'Show';
 		const tables = this.state.shown ? (
 			<div className="row">
 				<div className="column">
@@ -138,11 +140,32 @@ export default class HomePage extends Component {
 
 		return (
 			<div>
-				<button type="button" 
-					onClick={this._handleToggleLists}>{action} lists</button>
-				{tables}
-				<div className="actions">{actionBtns}</div>
-				<div className="footer">{confirmationBtns}</div>
+				<Header authenticated={authenticated} 
+						handleNotAuthenticated={this._handleNotAuthenticated} />
+				<div>
+					{!authenticated ? (
+						<h1>Login to start</h1>
+					) : (
+						<div>
+							<div>
+								<h1>You have login succcessfully to your first account!</h1>
+								<h2>Welcome {this.state.user.name}!</h2>
+							</div>
+							<div>
+								<button onClick={this._handleToggleLists}>
+									{toggle} lists
+								</button>
+								{tables}
+								<div className='footer'>
+									{actionBtns}
+								</div>
+								<div className='footer'>
+									{confirmationBtns}
+								</div>
+							</div>
+						</div>
+					)}
+				</div>
 			</div>
 		);
 	}
@@ -249,20 +272,21 @@ export default class HomePage extends Component {
 		});
 	};
 
-	_handleSave = () => {
-		const updatedDestLists = this.state.destLists.map(
-			list => {
-				if (list.newMembers != undefined) {
-					list.membersCount += list.newMembers;
-				}
-				list.newMembers = undefined;
-				return list;
-			}
-		);
-		this.setState((state) => ({
-			destLists: updatedDestLists.concat(state.newLists)
-		}));
-		this._handleCancel();
+	_handleSave = async event => {
+		await axios.post('http://localhost:4000/lists/list', {
+			lists: this.state.newLists
+		})
+		.then((response) => {
+			console.log(response);
+			this.setState((state) => ({
+				destLists: this.state.destLists.concat(state.newLists)
+			}));
+	
+			// Reset selected lists.
+			this._handleCancel();
+		}, (error) => {
+			console.log(error);
+		});
 	};
 
 	_handleCancel = () => {
