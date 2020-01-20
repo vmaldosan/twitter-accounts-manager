@@ -1,7 +1,7 @@
 {
-	"name": "twitter-oauth",
-	"version": "1.0.0",
-	"description": "",
+	"name": "twitter-accounts-manager",
+	"version": "0.1.0",
+	"description": "Basic operations between multiple Twitter accounts",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
