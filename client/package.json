@@ -1,6 +1,7 @@
 {
-	"name": "twitter-authentication",
+	"name": "twitter-accounts-manager-client",
 	"version": "0.1.0",
+	"description": "Front-end of a manager that allows basic operations between multiple Twitter accounts",
 	"private": true,
 	"dependencies": {
 		"node-sass": "^4.13.1",
