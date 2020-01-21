@@ -14,6 +14,9 @@ export default class Header extends Component {
 				<li>
 					<Link to="/">Home</Link>
 				</li>
+				<li>
+					<Link to="/lists">Manage lists</Link>
+				</li>
 				{authenticated ? (
 					<li onClick={this._handleLogoutClick}>Logout</li>
 				) : (

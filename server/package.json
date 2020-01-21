@@ -1,7 +1,7 @@
 {
-	"name": "twitter-accounts-manager",
+	"name": "twitter-accounts-manager-server",
 	"version": "0.1.0",
-	"description": "Basic operations between multiple Twitter accounts",
+	"description": "Back-end of a manager that allows basic operations between multiple Twitter accounts",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

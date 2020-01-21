@@ -67,7 +67,8 @@ export default class ListTable extends Component {
 		);
 	}
 
-	_updateChecked(e) {const listId = e.target.id;
+	_updateChecked(e) {
+		const listId = e.target.id;
 		let sel = this.props.selected;
 		const pos = sel.indexOf(listId);
 		if (pos >= 0) {
